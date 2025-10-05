@@ -1,0 +1,23 @@
+{% extends "store/base.html" %}
+
+{% block title %}Оформление заказа{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+    <h1>📝 Оформление заказа</h1>
+
+    <form method="post" class="checkout-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <h3>Ваши покупки:</h3>
+        <ul>
+            {% for item in cart.items.all %}
+                <li>{{ item.guitar.name }} — {{ item.quantity }} шт.</li>
+            {% endfor %}
+        </ul>
+
+        <button type="submit">Подтвердить заказ</button>
+    </form>
+</div>
+{% endblock %}

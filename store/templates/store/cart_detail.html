@@ -1,0 +1,32 @@
+{% extends "store/base.html" %}
+
+{% block title %}Корзина{% endblock %}
+
+{% block content %}
+<div class="cart-page">
+    <h1>🛒 Ваша корзина</h1>
+
+    {% if items %}
+        <ul class="cart-list">
+            {% for item in items %}
+                <li class="cart-item">
+                    <strong>{{ item.guitar.name }}</strong>
+                    — {{ item.quantity }} шт. | ${{ item.subtotal }}
+                    <div class="cart-actions">
+                        <a href="{% url 'store:update_quantity' item.guitar.id 'increase' %}">➕</a>
+                        <a href="{% url 'store:update_quantity' item.guitar.id 'decrease' %}">➖</a>
+                        <a href="{% url 'store:remove_from_cart' item.guitar.id %}">❌</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <p class="total"><strong>Итоговый счет: ${{ total }}</strong></p>
+        <p><a href="{% url 'store:check' %}" class="btn">✅ Оформить заказ</a></p>
+    {% else %}
+        <p>Корзина пустая. Наполните её своими любимыми гитарами 🎸</p>
+    {% endif %}
+
+    <p><a href="{% url 'store:guitar_list' %}">⬅ Вернуться к покупкам</a></p>
+</div>
+{% endblock %}

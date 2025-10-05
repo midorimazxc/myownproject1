@@ -1,0 +1,58 @@
+{% extends "store/base.html" %}
+
+{% block title %}{{ guitar.name }}{% endblock %}
+
+{% block content %}
+<div class="product-detail">
+    <h1>{{ guitar.name }}</h1>
+    <p class="price">💵 ${{ guitar.price }}</p>
+
+    {% if guitar.image %}
+        <img src="{{ guitar.image.url }}" alt="{{ guitar.name }}" class="product-image">
+    {% endif %}
+
+    <p class="description">{{ guitar.description }}</p>
+
+    <p class="rating">
+        {% if guitar.get_average_rating %}
+            ⭐ {{ guitar.get_average_rating }}/5
+        {% else %}
+            Пока нет оценок
+        {% endif %}
+    </p>
+
+    <form action="{% url 'store:add_to_cart' guitar.id %}" method="post" class="cart-form">
+        {% csrf_token %}
+        <button type="submit">Добавить в корзину</button>
+    </form>
+
+    <hr>
+    <h2>Отзывы:</h2>
+    {% if reviews %}
+        <ul class="review-list">
+            {% for review in reviews %}
+                <li class="review">
+                    <strong>{{ review.user.username }}</strong> — {{ review.rating }}/5
+                    <p>{{ review.text }}</p>
+                    <small>({{ review.created_at|date:"d.m.Y H:i" }})</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Пока отзывов нет</p>
+    {% endif %}
+
+    <h3>Оставить отзыв</h3>
+    {% if user.is_authenticated %}
+        <form method="post" class="review-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Отправить</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'store:login' %}">Войдите</a>, чтобы оставить отзыв</p>
+    {% endif %}
+
+    <p><a href="{% url 'store:guitar_list' %}">⬅ Назад к каталогу</a></p>
+</div>
+{% endblock %}

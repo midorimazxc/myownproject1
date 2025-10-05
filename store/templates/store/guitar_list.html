@@ -1,0 +1,53 @@
+{% extends "store/base.html" %}
+
+{% block title %}Каталог гитар{% endblock %}
+
+{% block content %}
+<h1>Каталог гитар</h1>
+
+<div class="toolbar">
+    <form method="get" class="search-bar">
+        <input type="text" name="q" placeholder="🔍 Поиск..." value="{{ request.GET.q }}">
+        <button type="submit">Найти</button>
+    </form>
+
+    <form method="get" class="filter">
+        <select name="category" onchange="this.form.submit()">
+            <option value="">Все категории</option>
+            {% for c in categories %}
+                <option value="{{ c.id }}" {% if request.GET.category == c.id|stringformat:"s" %}selected{% endif %}>
+                    {{ c.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+
+<ul class="product-list">
+    {% for guitar in guitars %}
+        <li class="product-card">
+            {% if guitar.image %}
+                <img src="{{ guitar.image.url }}" alt="{{ guitar.name }}">
+            {% endif %}
+            <div class="product-info">
+                <h3><a href="{% url 'store:guitar_detail' guitar.pk %}">{{ guitar.name }}</a></h3>
+                <p class="price">${{ guitar.price }}</p>
+                <p class="rating">
+                    {% if guitar.get_average_rating %}
+                        ⭐ {{ guitar.get_average_rating }}/5
+                    {% else %}
+                        Пока нет оценок
+                    {% endif %}
+                </p>
+                <a href="{% url 'store:guitar_detail' guitar.pk %}" class="details-btn">Подробнее</a>
+            </div>
+        </li>
+    {% empty %}
+        <p>Пока нет товаров, извините!</p>
+    {% endfor %}
+</ul>
+
+<div class="cart-link">
+    <h3><a href="{% url 'store:cart_detail' %}">🛒 Ваша корзина</a></h3>
+</div>
+{% endblock %}

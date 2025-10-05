@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Gibson Store{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<header class="navbar">
+    <h1><a href="{% url 'store:guitar_list' %}">🎸 Guitar Store</a></h1>
+    <nav>
+        <a href="{% url 'store:guitar_list' %}">Каталог</a>
+        <a href="{% url 'store:cart_detail' %}">Корзина</a>
+        {% if user.is_authenticated %}
+            <span>Привет, {{ user.username }}!</span>
+            <form method="post" action="{% url 'store:logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Выйти</button>
+            </form>
+        {% else %}
+            <a href="{% url 'store:login' %}">Войти</a> |
+            <a href="{% url 'store:register' %}">Регистрация</a>
+        {% endif %}
+    </nav>
+</header>
+
+<main class="container">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <p>© 2025 Guitar Store. Все права защищены.</p>
+</footer>
+</body>
+</html>
